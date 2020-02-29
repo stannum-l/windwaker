@@ -6,17 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Info struct {
-	Version string `json:"Version,omitempty"`
-	Commit  string `json:"Commit,omitempty"`
-}
-
-func New(version string, commit string) *Info {
-	return &Info{
-		Version: version,
-		Commit:  commit,
-	}
-}
+var (
+	Version   string
+	GitCommit string
+	GoVersion string
+)
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
@@ -27,6 +21,6 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Windwaker",
 	Long:  "All software has versions. This is Windwaker's.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Version -- TEST xx - HEAD")
+		fmt.Printf("Version:    %v\nGit Commit: %v\nGo Version: %v\n", Version, GitCommit, GoVersion)
 	},
 }
