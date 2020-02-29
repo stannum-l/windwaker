@@ -4,37 +4,32 @@ BINDIR    := $(CURDIR)/bin
 GOPATH     = $(shell go env GOPATH)
 DEP        = $(GOPATH)/bin/dep
 GOIMPORTS  = $(GOPATH)/bin/goimports
-ARCH       = $(shell uname -p)
+ARCH       = $(shell uname)
 
-LDFLAGS   := -w -s
-GOFLAGS   :=
-SRC       := $(shell find . -type f -name '*.go' -print)
-
-# Required for globs to work properly
-SHELL      = /usr/bin/env bash
 
 GIT_COMMIT = $(shell git rev-parse HEAD)
 GIT_SHA    = $(shell git rev-parse --short HEAD)
 GIT_TAG    = $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
 TAGS       =
 
-ifdef VERSION
-	BINARY_VERSION = $(VERSION)
-endif
-BINARY_VERSION ?= ${GIT_TAG}
+LDFLAGS   := -w -s
+GOFLAGS   :=
+SRC       := $(shell find . -type f -name '*.go' -print)
+VERSION   ?= development
 
-ifneq ($(BINARY_VERSION),)
-	LDFLAGS += ''
-endif
+# Required for globs to work properly
+SHELL      = /usr/bin/env bash
+
+LDFLAGS   += -X windwaker/cmd.GoVersion=$(shell go version | awk '{print $$3}')
+LDFLAGS   += -X windwaker/cmd.GitCommit=$(GIT_COMMIT)
+LDFLAGS   += -X windwaker/cmd.Version=$(VERSION)
 
 .PHONY: all
 all: build
 
 .PHONY: build
-build: $(BINDIR)/$(BINNAME)
-
-$(BINDIR)/$(BINNAME): $(SRC)
-	GOOS=linux GO111MODULE=on go build $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $(BINDIR)/$(BINNAME) .
+build: $(SRC)
+	GO111MODULE=on go build $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $(BINDIR)/$(BINNAME) .
 
 .PHONY: clean
 clean:
