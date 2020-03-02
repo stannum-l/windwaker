@@ -25,7 +25,6 @@ jobs:
         env:
           GOARCH: amd64
           GO111MODULE: on
-        with:
-          args: "run"
+
       - name: Build code
         run: make build
