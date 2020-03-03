@@ -65,7 +65,6 @@ linters:
     - dupl
     - errcheck
     - funlen
-    - gochecknoinits
     - goconst
     - gocritic
     - gocyclo
@@ -95,6 +94,7 @@ linters:
     - whitespace
 
   # don't enable:
+  # - gochecknoinits
   # - gochecknoglobals
   # - gocognit
   # - godox
